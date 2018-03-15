@@ -1,0 +1,37 @@
+C:\Users\Augustus\Anaconda3\python.exe C:/Users/Augustus/PycharmProjects/TotalProject/test.py
+EducationalPhotosIPhoneCutNamed2018-02-25\1 SHANE SMELTZ\
+Spent  38.412641286849976  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\10 MBAYE NIANG\
+Spent  39.41064476966858  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\11 RADJA NAINGGOLAN\
+Spent  39.67130708694458  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\12 EDMILSON JUNIOR\
+Spent  48.2429895401001  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\13 SERGIO BUSQETS\
+Spent  39.45323443412781  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\14 IGNAZIO ABATE\
+Spent  48.38413095474243  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\15 MIGUEL BORJA\
+Spent  43.14931893348694  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\16 LEONARDO PONZIO\
+Spent  39.557127714157104  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\17 WALTER BOU\
+Spent  54.06916522979736  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\2 ALEKSANDR KOKORIN\
+Spent  38.843215465545654  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\3 ADRIEN SILVA\
+Spent  44.91231822967529  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\4 TE ATAWHAI\
+Spent  44.58087205886841  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\5 JONAS HECTOR\
+Spent  43.253146171569824  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\6 MATTHEW SPIRANOVIC\
+Spent  49.089099407196045  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\7 VOLKAN DEMIREL\
+Spent  47.50309419631958  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\8 GABRIEL GABRIEL\
+Spent  38.486409187316895  seconds
+EducationalPhotosIPhoneCutNamed2018-02-25\9 VOLKAN SEN\
+Spent  54.37775683403015  seconds
+
+Process finished with exit code 0
