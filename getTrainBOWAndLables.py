@@ -78,3 +78,17 @@ def mainAnotherChoosing(allbow=[]):
 
 
 mainAnotherChoosing()
+
+
+'''
+Folder of player < 1 SHANE SMELTZ > has  25  files
+chosen  21  for training from them: [19, 14, 17, 15, 24, 22, 3, 7, 0, 21, 9, 20, 10, 5, 23, 11, 4, 13, 2, 12, 1]
+chosen  2  for validation from them: [16, 18]
+chosen  2  for training from them: [6, 8]
+Traceback (most recent call last):
+  File "...", line 80, in <module>
+    mainAnotherChoosing()
+  File "..." line 68, in mainAnotherChoosing
+    trainingBoW.append(allbow[t])
+IndexError: list index out of range
+'''
