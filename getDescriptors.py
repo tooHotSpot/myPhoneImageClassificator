@@ -6,61 +6,66 @@ import numpy as np
 import time
 
 
-def main(detector, detectorName):
-    print("Currently in descriptors function")
-    d = []
-    p = "Descriptors/All" + detectorName + ".txt"
-    if not os.path.isfile(p):
-        print(p, " does not exist")
-        p = "Descriptors/" + detectorName + "/"
-        if not os.path.isdir(p):
-            print("No files in dir ", p)
-            p = "EducationalPhotosIPhoneCutNamed2018-02-25/*/"
-            for playerFolder in glob.glob(p):
-                print(playerFolder)
-                t = playerFolder.split('\\')[1]
-                folderImages = playerFolder + '*.jpg'
-                playerDescriptors = []
-                for image in glob.glob(folderImages):
-                    img = cv2.imread(image)
-                    kp, imageDescriptors = detector.detectAndCompute(img, None)
-                    playerDescriptors.append(imageDescriptors[:500])
-                    print(len(playerDescriptors))
-                directory = 'Descriptors/' + detectorName
-                if not os.path.exists(directory):
-                    os.makedirs(directory)
-                playerDescriptorsFile = "Descriptors/" + detectorName + "/" + t + ".txt"
-                f = open(playerDescriptorsFile, "wb")
-                pickle.dump(playerDescriptors, f)
-                f.close()
-        print("Descriptors already exists but not collected")
-        p = "Descriptors/" + detectorName + "/*.txt"  # Getting all txt files in the directory
-        for playerDescriptorsFile in glob.glob(p):  # Iterating whole txt files array
-            print(playerDescriptorsFile)
-            f = open(playerDescriptorsFile, "rb")
-            playerDescriptors = pickle.load(f)
-            # print("There are ", len(allImagesDescriptors), " images with descriptors")
-            for imageDescriptors in playerDescriptors:
-                d.append(imageDescriptors)
-            f.close()
-            f = open("Descriptors/All" + detectorName + ".txt", "wb")
-            pickle.dump(d, f)
-            f.close()
-    else:
-        print("Importing collected descriptors from: " + p)
-        f = open(p, "rb")
-        d = pickle.load(f)
-        print(len(d))
-        f.close()
-    return d
+def pickle_it(data, path):
+    """
+    Сохранить данные data в файл path
+    :param data: данные, класс, массив объектов
+    :param path: путь до итогового файла
+    :return:
+    """
+    with open(path, 'wb') as f:
+        pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def convert(d):
-    print("Unpacking all descriptors to one array: start")
-    dConverted = []
-    # finally for our task
-    for image in d:
-        for j in image:
-            dConverted.append(j)
-    print("Unpacked. Returned array of descriptors")
-    return dConverted
+def unpickle_it(path):
+    """
+    Достать данные из pickle файла
+    :param path: путь до файла с данными
+    :return:
+    """
+    with open(path, 'rb') as f:
+        return pickle.load(f)
+
+
+def evaluate(detector, detectorName, amountOfDescriptors, dataFolder):
+    # Checking of data type TODO
+    print("Function: getDescriptors\n", "\tParameters: ", "detectorName = ", detectorName,
+          "amountOfDescriptors = ", amountOfDescriptors,
+          "dataFolder = ", dataFolder)
+    if len(os.listdir(dataFolder)) == 0:
+        print("dataFolder is empty")
+        return
+
+    descriptorsFolder = os.path.join("descriptors/", detectorName, str(amountOfDescriptors))
+    if not os.path.exists(descriptorsFolder):
+        os.makedirs(descriptorsFolder)
+
+    countProcessed = 0
+    if len(os.listdir(descriptorsFolder)) < len(os.listdir(dataFolder)):
+        print("Processing new descriptors: ")
+        for player in os.listdir(dataFolder):
+            print("class: ", player)
+            playerDescriptorsFolder = os.path.join(descriptorsFolder, player)
+            if not os.path.exists(playerDescriptorsFolder):
+                os.makedirs(playerDescriptorsFolder)
+            playerDataFolder = os.path.join(dataFolder, player)
+            for image in os.listdir(playerDataFolder):
+                print("\t", image)
+                imageForComputation = cv2.imread(os.path.join(playerDataFolder, image))
+                kp, imageDescriptors = detector.detectAndCompute(imageForComputation, None)
+                imageDescriptors = imageDescriptors[:min(amountOfDescriptors, len(imageDescriptors))]
+                if amountOfDescriptors > len(imageDescriptors):
+                    print("Too big amountOfDescriptors value error ", amountOfDescriptors, " > ", len(imageDescriptors))
+                imageDescriptorsFile = image + ".txt"
+                pickle_it(imageDescriptors, os.path.join(playerDescriptorsFolder, imageDescriptorsFile))
+                countProcessed += 1
+
+    print("Successfully processed {} images".format(countProcessed))
+
+
+evaluate(detector=cv2.xfeatures2d.SIFT_create(),
+         detectorName="SIFT",
+         amountOfDescriptors=500,
+         dataFolder="train")
+
+
