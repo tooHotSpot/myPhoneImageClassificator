@@ -22,8 +22,8 @@ def main(detector, detectorName):
                 folderImages = playerFolder + '*.jpg'
                 playerDescriptors = []
                 for image in glob.glob(folderImages):
-                    image = cv2.imread(image)
-                    kp, imageDescriptors = detector.detectAndCompute(image, None)
+                    img = cv2.imread(image)
+                    kp, imageDescriptors = detector.detectAndCompute(img, None)
                     playerDescriptors.append(imageDescriptors[:500])
                     print(len(playerDescriptors))
                 directory = 'Descriptors/' + detectorName
@@ -40,9 +40,6 @@ def main(detector, detectorName):
             f = open(playerDescriptorsFile, "rb")
             playerDescriptors = pickle.load(f)
             # print("There are ", len(allImagesDescriptors), " images with descriptors")
-            # set = np.linspace(0, len(allImagesDescriptors)-1, len(allImagesDescriptors))
-            # np.random.shuffle(set)
-            # training = np.round(len(set)*0.85)
             for imageDescriptors in playerDescriptors:
                 d.append(imageDescriptors)
             f.close()
