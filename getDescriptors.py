@@ -27,7 +27,7 @@ def unpickle_it(path):
         return pickle.load(f)
 
 
-def getInOneClick(detector, detectorName, minAmountOfDescriptors, maxAmountOfDescriptors, step, dataFolder):
+def countSave(detector, detectorName, minAmountOfDescriptors, maxAmountOfDescriptors, step, dataFolder):
     myDict = {}
     for i in range(minAmountOfDescriptors, maxAmountOfDescriptors + 5, step):
         myDict[i] = 0
@@ -43,48 +43,60 @@ def getInOneClick(detector, detectorName, minAmountOfDescriptors, maxAmountOfDes
           "step = ", step,
           "dataFolder = ", dataFolder)
 
-    countProcessedPlayers = 0
-    countProcessedImages = 0
     print("Processing new descriptors: ")
     for player in os.listdir(dataFolder):
         print("class (player): ", player)
         playerDataFolder = os.path.join(dataFolder, player)
         for image in os.listdir(playerDataFolder):
-            print("\t", image)
+            # print("\t", image)
             imageForComputation = cv2.imread(os.path.join(playerDataFolder, image))
             kp, imageDescriptors = detector.detectAndCompute(imageForComputation, None)
             initialLength = len(imageDescriptors)
             for i in np.arange(minAmountOfDescriptors, maxAmountOfDescriptors + 5, step):
                 amountOfDescriptors = i
-                imageDescriptors = imageDescriptors[:min(amountOfDescriptors, len(imageDescriptors))]
-                if amountOfDescriptors > initialLength:
-                    print("Too big amount of descriptors error:, {}  > {}".format(amountOfDescriptors, initialLength))
-                    return
-                    break
                 playerDescriptorsFolder = os.path.join("descriptors/", detectorName, str(amountOfDescriptors), player)
-                if not os.path.exists(playerDescriptorsFolder):
+                if os.path.exists(playerDescriptorsFolder) and len(os.listdir(playerDescriptorsFolder)) == len(
+                        os.listdir(playerDataFolder)):
+                    # Хотя бы попытаться пересчитать еще раз дескрипторы
+                    continue
+                elif not os.path.exists(playerDescriptorsFolder):
                     os.makedirs(playerDescriptorsFolder)
                 imageDescriptorsFile = image + ".txt"
+                imageDescriptors = imageDescriptors[:min(amountOfDescriptors, len(imageDescriptors))]
+                if amountOfDescriptors > initialLength:
+                    print("Too big amount of descriptors error:, {}  > {} for image {}".format(amountOfDescriptors,
+                                                                                               initialLength,
+                                                                                               image))
+                    break
                 pickle_it(imageDescriptors, os.path.join(playerDescriptorsFolder, imageDescriptorsFile))
                 myDict[amountOfDescriptors] += 1
-            countProcessedImages += 1
-            break  # remove before super-start
-        countProcessedPlayers += 1
 
-    print("Successfully processed {} images of {} players".format(countProcessedImages, countProcessedPlayers))
+    # print("Successfully processed {} images of {} players".format(countProcessedImages, countProcessedPlayers))
     print("Amount of photos with definite descriptors extracted:")
-    for i in range(minAmountOfDescriptors, maxAmountOfDescriptors, step):
+    for i in range(minAmountOfDescriptors, maxAmountOfDescriptors + 5, step):
         print("{} : {}".format(i, myDict[i]))
 
 
-def main():
+def processDescriptorsRange(a=500, b=500, c=500):
     detectors = [[cv2.xfeatures2d.SIFT_create(), "SIFT"],
                  [cv2.xfeatures2d.SURF_create(), "SURF"],
                  [cv2.AKAZE_create(), "AKAZE"]]
+    t0 = time.time()
     for pair in detectors:
-        getInOneClick(detector=pair[0], detectorName=pair[1],
-                      minAmountOfDescriptors=500, maxAmountOfDescriptors=10000, step=50,
-                      dataFolder="train")
+        print(pair[1])
+        countSave(detector=pair[0], detectorName=pair[1],
+                  minAmountOfDescriptors=a, maxAmountOfDescriptors=b, step=c,
+                  dataFolder="train")
+        print("{} finished, time = {} ".format(pair[1], (time.time() - t0) // 60))
+        t0 = time.time()
 
 
-main()
+def getInOneClick():
+    pass
+
+
+def processDescriptorsDefiniteSize(size):
+    processDescriptorsRange(size, size - size // 10, size)
+
+
+processDescriptorsDefiniteSize(750)
