@@ -13,9 +13,12 @@ def main(detectorName, descriptors, centroids):
     if not os.path.isfile(p):
         print(p, " does not exist, wait some time before processing bags")
         allbow = []
+        lessthan500 = 0
         for image in descriptors:
             print("Counting bag of words for image #", len(allbow) + 1, end=": ")
             imagebow = np.zeros(dictionarySize)
+            if len(image) < 500:
+                lessthan500 += 1
             for desc in image:
                 mindist = 100000000
                 minindex = 0
@@ -28,6 +31,7 @@ def main(detectorName, descriptors, centroids):
                 imagebow[minindex] += 1  # Descriptor #desci matches best to class #minindex
             allbow.append(imagebow)
             print(" added, time:", (time.time() - t0) // 60, ";")
+        print("\nWarning: desc len less than 500: ", lessthan500)
         directory = "BOW/"
         print("Saving to ", directory, " as ", p)
         if not os.path.exists(directory):
